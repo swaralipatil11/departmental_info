@@ -2,21 +2,24 @@
 
 ## Test Results
 
-> These results come from running `scripts/test.ps1` from the project root. The "Actual Result" and "Status" columns reflect the real output of that run.
+> These results come from running `scripts/test.ps1` from the project root on 2026-10-24. The "Actual Result" and "Status" columns reflect the real output of that run.
 
 | Test | Expected Result | Actual Result | Status |
 |---|---|---|---|
-| Build image | `docker build -t department-portal .` completes with no errors | Docker Desktop was not running when this document was first prepared, so the build could not be executed. Run `scripts/test.ps1` after starting Docker Desktop and update this row with the real output. | NOT RUN |
-| Start container | Container `portal` starts and appears in `docker ps` | Not yet executed (see above) | NOT RUN |
-| Open website | `http://localhost:8080` returns HTTP 200 and the page contains all 5 sections (Home, About the Department, Faculty Information, Courses Offered, Contact Information) | Not yet executed (see above) | NOT RUN |
-| Stop container | `docker stop portal` succeeds; a request to `http://localhost:8080` then fails | Not yet executed (see above) | NOT RUN |
-| Restart container | `docker start portal` succeeds; a request to `http://localhost:8080` returns HTTP 200 again | Not yet executed (see above) | NOT RUN |
-| View logs | `docker logs portal` contains no lines matching `error`, `emerg`, or `crit` | Not yet executed (see above) | NOT RUN |
+| Build image | `docker build -t department-portal .` completes with no errors | `docker build` completed with exit code 0 | PASS |
+| Start container | Container `portal` starts and appears in `docker ps` | `docker ps` listed `portal` as running | PASS |
+| Open website | `http://localhost:8080` returns HTTP 200 and the page contains all 5 sections (Home, About the Department, Faculty Information, Courses Offered, Contact Information) | Response status 200; all 5 section strings found, none missing | PASS |
+| Stop container | `docker stop portal` succeeds; a request to `http://localhost:8080` then fails | Request to `http://localhost:8080` failed as expected after stop | PASS |
+| Restart container | `docker start portal` succeeds; a request to `http://localhost:8080` returns HTTP 200 again | Response status 200 after restart | PASS |
+| View logs | `docker logs portal` contains no lines matching `[error]`, `[emerg]`, or `[crit]` | 0 matching lines found | PASS |
 
-**To fill this table in with real results:**
+All 6 tests passed. The `portal` container was left running at the end, as required.
+
+**Note on a script bug found and fixed during testing:** the original `test.ps1` used `$ErrorActionPreference = "Stop"` together with `docker build ... 2>&1`, which caused PowerShell 5.1 to treat Docker's normal build progress output (written to stderr) as a fatal error even though the build succeeded (exit code 0). Similarly, `docker logs portal 2>&1` wrapped each stderr line in a `NativeCommandError` object whose own type name contains the substring "Error", causing a false-positive match against the `error|emerg|crit` pattern. Both were fixed by switching to `$ErrorActionPreference = "Continue"`, checking `$LASTEXITCODE` directly for the build step, and merging streams through `cmd /c "docker logs portal 2>&1"` for the log-check step so PowerShell receives plain text instead of error-wrapped objects.
+
+**To re-run these tests yourself:**
 1. Start Docker Desktop and wait until it is fully running (`docker info` succeeds).
 2. From the project root, run: `.\scripts\test.ps1`
-3. Copy the PASS/FAIL output for each test into the table above, replacing "Not yet executed".
 
 ## Troubleshooting Notes
 

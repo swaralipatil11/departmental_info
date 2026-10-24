@@ -5,7 +5,7 @@
   Run from the project root: .\scripts\test.ps1
 #>
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
 
@@ -26,12 +26,8 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # 1. Build image
-try {
-    docker build -t department-portal . 2>&1 | Out-Null
-    Add-Result "Build image" $true "docker build completed successfully"
-} catch {
-    Add-Result "Build image" $false "docker build failed: $_"
-}
+docker build -t department-portal . 2>&1 | Out-Null
+Add-Result "Build image" ($LASTEXITCODE -eq 0) "docker build exit code: $LASTEXITCODE"
 
 # Remove any existing container named portal before starting fresh
 $existing = docker ps -a --filter "name=^portal$" --format "{{.Names}}"
@@ -90,14 +86,12 @@ try {
 }
 
 # 6. Check logs for error/emerg/crit
-try {
-    $logs = docker logs portal 2>&1
-    $badLines = $logs | Select-String -Pattern "error|emerg|crit" -CaseSensitive:$false
-    $pass = ($badLines.Count -eq 0)
-    Add-Result "View logs" $pass "matching lines found: $($badLines.Count)"
-} catch {
-    Add-Result "View logs" $false "docker logs failed: $_"
-}
+# Use cmd /c to merge stdout+stderr as plain text; PowerShell 5.1 otherwise wraps
+# native stderr lines in NativeCommandError objects whose own type name contains "Error".
+$logs = cmd /c "docker logs portal 2>&1"
+$badLines = $logs | Select-String -Pattern "\[(error|emerg|crit)\]" -CaseSensitive:$false
+$pass = ($badLines.Count -eq 0)
+Add-Result "View logs" $pass "matching lines found: $($badLines.Count)"
 
 Write-Host ""
 Write-Host "===== Summary =====" -ForegroundColor Cyan

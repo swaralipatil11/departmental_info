@@ -136,14 +136,14 @@ The full testing table, troubleshooting notes, and screenshot checklist are main
 
 | Test | Expected Result | Status |
 |---|---|---|
-| Build image | `docker build` completes with no errors | See `docs/TESTING.md` |
-| Start container | `portal` container appears in `docker ps` | See `docs/TESTING.md` |
-| Open website | HTTP 200 and all 5 sections present | See `docs/TESTING.md` |
-| Stop container | Site becomes unreachable after `docker stop` | See `docs/TESTING.md` |
-| Restart container | Site reachable again after `docker start` | See `docs/TESTING.md` |
-| View logs | No `error`/`emerg`/`crit` log lines | See `docs/TESTING.md` |
+| Build image | `docker build` completes with no errors | PASS |
+| Start container | `portal` container appears in `docker ps` | PASS |
+| Open website | HTTP 200 and all 5 sections present | PASS |
+| Stop container | Site becomes unreachable after `docker stop` | PASS |
+| Restart container | Site reachable again after `docker start` | PASS |
+| View logs | No `[error]`/`[emerg]`/`[crit]` log lines | PASS |
 
-The automated script `scripts/test.ps1` performs all six checks in sequence and prints a PASS/FAIL result for each, while leaving the container running afterward so the final state can be inspected manually or screenshotted. Refer to `docs/TESTING.md` for the actual recorded output of each test run, since that file is updated directly from the script's console output rather than duplicated here.
+All six automated checks passed on the final test run (2026-10-24). The automated script `scripts/test.ps1` performs all six checks in sequence and prints a PASS/FAIL result for each, while leaving the container running afterward so the final state can be inspected manually or screenshotted. During development of the test script, two false failures were traced to a PowerShell 5.1 quirk — native commands' stderr output being wrapped in `NativeCommandError` objects — and fixed by checking `$LASTEXITCODE` directly and merging streams through `cmd /c` before pattern-matching the logs. Refer to `docs/TESTING.md` for the full table and the detailed explanation of that fix.
 
 ## 10. Challenges Faced and Solutions
 
