@@ -8,7 +8,7 @@
 
 **Department:** Artificial Intelligence and Data Science Engineering
 
-**College:** [College Name]
+**College:** Pune Institute of Computer Technology
 
 **Academic Year:** [Academic Year]
 
