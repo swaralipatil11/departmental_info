@@ -6,7 +6,7 @@
 
 **Course / Activity:** Activity 8
 
-**Department:** [Department Name]
+**Department:** Artificial Intelligence and Data Science Engineering
 
 **College:** [College Name]
 

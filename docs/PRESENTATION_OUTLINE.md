@@ -2,7 +2,7 @@
 
 ## Slide 1 — Project Title
 - Departmental Information Portal (Dockerized)
-- [Department Name], [College Name]
+- Department of Artificial Intelligence and Data Science Engineering, [College Name]
 - Activity 8 — Group project
 - Team: [Member 1], [Member 2], [Member 3], [Member 4]
 - Date: [Presentation Date]
