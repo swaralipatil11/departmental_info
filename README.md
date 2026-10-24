@@ -90,13 +90,4 @@ The following screenshots document the working deployment (see `docs/TESTING.md`
 - `docs/screenshots/04-docker-ps.png` — `docker ps` showing the running container
 - `docs/screenshots/05-website-after-restart.png` — Portal working after stop/start
 
-## Team Members
 
-| Member | Name | Role |
-|---|---|---|
-| Member 1 | [Member 1 Name] | Website + Docker |
-| Member 2 | [Member 2 Name] | GitHub + README |
-| Member 3 | [Member 3 Name] | Testing + Screenshots |
-| Member 4 | [Member 4 Name] | Report + PPT + Diagram |
-
-See `docs/CONTRIBUTIONS.md` for detailed task breakdowns.
